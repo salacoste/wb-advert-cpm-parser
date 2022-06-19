@@ -21,7 +21,7 @@ def search_catalog_ads(query_text):
     url = f'https://catalog-ads.wildberries.ru/api/v5/search?keyword={url_encoded_query_text}'
     headers = __wb_headers()
     headers["Referer"] = headers["Referer"].replace('{url_encoded_query_text}', url_encoded_query_text)
-    # print(headers)
+    print('send request: {}'.format(url))
     r = requests.get(url, headers=headers)
     r.raise_for_status()
     return r.json()
