@@ -32,8 +32,13 @@ def main():
         time.sleep(interval)
 
 
+def get_unique_groups(queries_resultset):
+    return set(q['group_name'] for q in queries_resultset)
+
+
 def work_loop(db):
     queries = db_facade.get_queries(db)
+    print('active groups: {}'.format(get_unique_groups(queries)))
     print('get {} queries for scan'.format(len(queries)))
     for q in queries:
         json_data = '\{\}'

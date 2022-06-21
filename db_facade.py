@@ -3,6 +3,7 @@ import psycopg2.extras
 
 kSettingNameIntervalSec = 'scan_interval_sec'
 
+
 def connect(params):
     db = psycopg2.connect(database=params.db_name, user=params.db_user,
                           password=params.db_password, host=params.db_host, port=params.db_port)
@@ -24,7 +25,10 @@ def __parse_settings(settings):
 def get_queries(db):
     cursor = db.cursor(cursor_factory=psycopg2.extras.DictCursor)
     cursor.execute(
-        "SELECT id, query_text FROM ads_search_query;")
+        "SELECT q.id, q.query_text, g.group_name "
+        "FROM ads_search_query q "
+        "JOIN ads_search_group g ON q.group_id = g.id "
+        "WHERE g.turn_on = TRUE;")
     return cursor.fetchall()
 
 
@@ -38,6 +42,7 @@ def save_ads_search_result(db, query_id, json_str, status):
 
 def get_settings(db):
     cursor = db.cursor()
-    cursor.execute("SELECT setting_name, setting_value FROM ads_search_settings;")
+    cursor.execute(
+        "SELECT setting_name, setting_value FROM ads_search_settings;")
     settings = cursor.fetchall()
     return __parse_settings(settings)
